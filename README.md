@@ -6,7 +6,7 @@ API REST desenvolvida com Spring Boot para gerenciamento escolar, permitindo o c
 
 ## Tecnologias utilizadas
 
-- Java 22
+- Java 17
 - Spring Boot
 - Spring Data JPA
 - Hibernate

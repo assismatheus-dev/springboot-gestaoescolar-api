@@ -28,7 +28,7 @@ public class ProfessorController {
     public ResponseEntity<List<ProfessorResponseDTO>> listarTodos() {return ResponseEntity.ok(service.listarTodos());}
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfessorResponseDTO> buscarPorId(@PathVariable Long id) {return ResponseEntity.ok(service.buscarporId(id));}
+    public ResponseEntity<ProfessorResponseDTO> buscarPorId(@PathVariable Long id) {return ResponseEntity.ok(service.buscarPorId(id));}
 
     @PatchMapping("/{id}")
     public ResponseEntity<ProfessorResponseDTO> atualizarParcial(@PathVariable Long id,

@@ -6,6 +6,7 @@ import br.com.uniescola.schoolmanagementapi.database.repository.ProfessorReposit
 import br.com.uniescola.schoolmanagementapi.database.repository.TurmaRepository;
 import br.com.uniescola.schoolmanagementapi.dto.request.TurmaRequestDTO;
 import br.com.uniescola.schoolmanagementapi.dto.response.TurmaResponseDTO;
+import br.com.uniescola.schoolmanagementapi.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class TurmaService {
     @Transactional
     public TurmaResponseDTO salvar(TurmaRequestDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id:" + dto.getProfessorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id:" + dto.getProfessorId()));
         Turma turma = new Turma();
         turma.setNome(dto.getNome());
         turma.setProfessor(professor);
@@ -43,17 +44,17 @@ public class TurmaService {
 
     public TurmaResponseDTO buscarPorId(Long id) {
         Turma turma = turmaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turma não encontrada com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
 
         return toResponseDTO(turma);
     }
 
     public TurmaResponseDTO atualizarTotal(Long id, TurmaRequestDTO dto) {
         Turma turmaExistente = turmaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turma não encontrada com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
 
         Professor professorExistente = professorRepository.findById(dto.getProfessorId())
-                        .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+                        .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
         turmaExistente.setNome(dto.getNome());
         turmaExistente.setProfessor(professorExistente);
@@ -64,15 +65,17 @@ public class TurmaService {
 
     public TurmaResponseDTO atualizarParcial(Long id, TurmaRequestDTO dto) {
         Turma turmaExistente = turmaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turma não encontrada com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
 
-        Professor professorExistente = professorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+        Professor professorExistente = professorRepository.findById(dto.getProfessorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
         if(dto.getNome() != null) {turmaExistente.setNome(dto.getNome());}
         if(dto.getProfessorId() != null) {
             Professor professor = professorRepository.findById(dto.getProfessorId())
-                    .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
+
+            turmaExistente.setProfessor(professor);
         }
 
         turmaRepository.save(turmaExistente);
@@ -81,7 +84,7 @@ public class TurmaService {
 
     @Transactional
     public void deletar(Long id) {
-        if(!turmaRepository.existsById(id)) {throw new RuntimeException("Turma não encontrada com o id: " + id);}
+        if(!turmaRepository.existsById(id)) {throw new ResourceNotFoundException("Turma não encontrada com o id: " + id);}
 
         turmaRepository.deleteById(id);
     }

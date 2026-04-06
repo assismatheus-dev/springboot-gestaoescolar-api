@@ -5,6 +5,7 @@ import br.com.uniescola.schoolmanagementapi.database.repository.ProfessorReposit
 import br.com.uniescola.schoolmanagementapi.database.repository.TurmaRepository;
 import br.com.uniescola.schoolmanagementapi.dto.request.ProfessorRequestDTO;
 import br.com.uniescola.schoolmanagementapi.dto.response.ProfessorResponseDTO;
+import br.com.uniescola.schoolmanagementapi.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,9 @@ public class ProfessorService {
                 .toList();
     }
 
-    public ProfessorResponseDTO buscarporId(Long id) {
+    public ProfessorResponseDTO buscarPorId(Long id) {
         Professor professor = professorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
         return toResponseDTO(professor);
     }
@@ -48,7 +49,7 @@ public class ProfessorService {
     @Transactional
     public ProfessorResponseDTO atualizarTotal(Long id, ProfessorRequestDTO dto) {
         Professor professorExistente = professorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
         professorExistente.setNome(dto.getNome());
         professorExistente.setEmail(dto.getEmail());
@@ -61,11 +62,11 @@ public class ProfessorService {
     @Transactional
     public ProfessorResponseDTO atualizarParcial(Long id, ProfessorRequestDTO dto) {
         Professor professorExistente = professorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
-        if(professorExistente.getNome() != null) {professorExistente.setNome(dto.getNome());}
-        if(professorExistente.getEmail() != null) {professorExistente.setEmail(dto.getEmail());}
-        if(professorExistente.getEspecialidade() != null) {professorExistente.setEspecialidade(dto.getEspecialidade());}
+        if(dto.getNome() != null) {professorExistente.setNome(dto.getNome());}
+        if(dto.getEmail() != null) {professorExistente.setEmail(dto.getEmail());}
+        if(dto.getEspecialidade() != null) {professorExistente.setEspecialidade(dto.getEspecialidade());}
 
         professorRepository.save(professorExistente);
         return toResponseDTO(professorExistente);
@@ -73,7 +74,7 @@ public class ProfessorService {
 
     @Transactional
     public void deletar(Long id) {
-        if(!professorRepository.existsById(id)) {throw new RuntimeException("Professor não encontrado com o id: " + id);}
+        if(!professorRepository.existsById(id)) {throw new ResourceNotFoundException("Professor não encontrado com o id: " + id);}
 
         professorRepository.deleteById(id);
     }

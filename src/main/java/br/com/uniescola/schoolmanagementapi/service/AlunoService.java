@@ -6,6 +6,7 @@ import br.com.uniescola.schoolmanagementapi.database.repository.AlunoRepository;
 import br.com.uniescola.schoolmanagementapi.database.repository.TurmaRepository;
 import br.com.uniescola.schoolmanagementapi.dto.request.AlunoRequestDTO;
 import br.com.uniescola.schoolmanagementapi.dto.response.AlunoResponseDTO;
+import br.com.uniescola.schoolmanagementapi.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -47,16 +48,16 @@ public class AlunoService {
                 .toList();
     }
 
-    public AlunoResponseDTO buscarporid(Long id) {
+    public AlunoResponseDTO buscarPorId(Long id) {
         Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encotrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado com o id: " + id));
         return converterRequestParaResponse(aluno);
     }
 
     @Transactional
     public AlunoResponseDTO atualizarTotal(Long id, AlunoRequestDTO dto) {
         Aluno alunoExistente = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno ão encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado com o id: " + id));
 
         alunoExistente.setNome(dto.getNome());
         alunoExistente.setEmail(dto.getEmail());
@@ -70,7 +71,7 @@ public class AlunoService {
     @Transactional
     public AlunoResponseDTO atualizarParcial(Long id, AlunoRequestDTO dto) {
         Aluno alunoExistente = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não  encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado com o id: " + id));
 
         if(dto.getNome() != null) {alunoExistente.setNome(dto.getNome());}
         if(dto.getEmail() != null) {alunoExistente.setEmail(dto.getEmail());}
@@ -79,7 +80,7 @@ public class AlunoService {
 
         if(dto.getTurmaId() != null) {
             Turma turma = turmaRepository.findById(dto.getTurmaId())
-                            .orElseThrow(() -> new RuntimeException("Turma não encontrada com o id: " + dto.getTurmaId()));
+                            .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + dto.getTurmaId()));
             alunoExistente.setTurma(turma);
         }
 
@@ -89,7 +90,7 @@ public class AlunoService {
 
     @Transactional
     public void deletar(Long id) {
-        if(!alunoRepository.existsById(id)) {throw new RuntimeException("Aluno não encontrado com o id: " + id);}
+        if(!alunoRepository.existsById(id)) {throw new ResourceNotFoundException("Aluno não encontrado com o id: " + id);}
 
         alunoRepository.deleteById(id);
     }

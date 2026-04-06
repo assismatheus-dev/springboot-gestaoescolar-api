@@ -27,7 +27,7 @@ public class AlunoController {
     public ResponseEntity<List<AlunoResponseDTO>> listarTodos() {return ResponseEntity.ok(service.listarTodos());}
 
     @GetMapping("/{id}")
-    public ResponseEntity<AlunoResponseDTO> buscarPorId(@PathVariable Long id) {return ResponseEntity.ok(service.buscarporid(id));}
+    public ResponseEntity<AlunoResponseDTO> buscarPorId(@PathVariable Long id) {return ResponseEntity.ok(service.buscarPorId(id));}
 
     @PatchMapping("/{id}")
     public ResponseEntity<AlunoResponseDTO> atualizarParcial(@PathVariable Long id,

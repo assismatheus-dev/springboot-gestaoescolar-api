@@ -2,7 +2,6 @@ package br.com.uniescola.schoolmanagementapi.service;
 
 import br.com.uniescola.schoolmanagementapi.database.entity.Professor;
 import br.com.uniescola.schoolmanagementapi.database.repository.ProfessorRepository;
-import br.com.uniescola.schoolmanagementapi.database.repository.TurmaRepository;
 import br.com.uniescola.schoolmanagementapi.dto.request.ProfessorRequestDTO;
 import br.com.uniescola.schoolmanagementapi.dto.response.ProfessorResponseDTO;
 import br.com.uniescola.schoolmanagementapi.exceptions.ResourceNotFoundException;
@@ -22,7 +21,6 @@ public class ProfessorService {
 
     @Transactional
     public ProfessorResponseDTO salvar(ProfessorRequestDTO dto) {
-
         Professor professor = new Professor();
         professor.setNome(dto.getNome());
         professor.setEmail(dto.getEmail());
@@ -42,7 +40,6 @@ public class ProfessorService {
     public ProfessorResponseDTO buscarPorId(Long id) {
         Professor professor = professorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
-
         return toResponseDTO(professor);
     }
 
@@ -64,9 +61,9 @@ public class ProfessorService {
         Professor professorExistente = professorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
 
-        if(dto.getNome() != null) {professorExistente.setNome(dto.getNome());}
-        if(dto.getEmail() != null) {professorExistente.setEmail(dto.getEmail());}
-        if(dto.getEspecialidade() != null) {professorExistente.setEspecialidade(dto.getEspecialidade());}
+        if (dto.getNome() != null) { professorExistente.setNome(dto.getNome()); }
+        if (dto.getEmail() != null) { professorExistente.setEmail(dto.getEmail()); }
+        if (dto.getEspecialidade() != null) { professorExistente.setEspecialidade(dto.getEspecialidade()); }
 
         professorRepository.save(professorExistente);
         return toResponseDTO(professorExistente);
@@ -74,8 +71,9 @@ public class ProfessorService {
 
     @Transactional
     public void deletar(Long id) {
-        if(!professorRepository.existsById(id)) {throw new ResourceNotFoundException("Professor não encontrado com o id: " + id);}
-
+        if (!professorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Professor não encontrado com o id: " + id);
+        }
         professorRepository.deleteById(id);
     }
 

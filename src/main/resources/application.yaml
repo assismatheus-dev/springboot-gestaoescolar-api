@@ -2,9 +2,9 @@ spring:
   application:
     name: schoolmanagementapi
   datasource:
-    url: jdbc:postgresql://localhost:5432/spring_p2
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -13,8 +13,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format-sql: true
-  server:
-    servlet:
-      context-path: /api
+        format_sql: true
 
+server:
+  servlet:
+    context-path: /api

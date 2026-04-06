@@ -18,7 +18,7 @@ public class TurmaService {
     private final TurmaRepository turmaRepository;
     private final ProfessorRepository professorRepository;
 
-    public TurmaService(TurmaRepository turmaRepository,  ProfessorRepository professorRepository) {
+    public TurmaService(TurmaRepository turmaRepository, ProfessorRepository professorRepository) {
         this.turmaRepository = turmaRepository;
         this.professorRepository = professorRepository;
     }
@@ -26,7 +26,7 @@ public class TurmaService {
     @Transactional
     public TurmaResponseDTO salvar(TurmaRequestDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id:" + dto.getProfessorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + dto.getProfessorId()));
         Turma turma = new Turma();
         turma.setNome(dto.getNome());
         turma.setProfessor(professor);
@@ -45,35 +45,35 @@ public class TurmaService {
     public TurmaResponseDTO buscarPorId(Long id) {
         Turma turma = turmaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
-
         return toResponseDTO(turma);
     }
 
+    @Transactional
     public TurmaResponseDTO atualizarTotal(Long id, TurmaRequestDTO dto) {
         Turma turmaExistente = turmaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
 
-        Professor professorExistente = professorRepository.findById(dto.getProfessorId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
+        Professor professor = professorRepository.findById(dto.getProfessorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + dto.getProfessorId()));
 
         turmaExistente.setNome(dto.getNome());
-        turmaExistente.setProfessor(professorExistente);
+        turmaExistente.setProfessor(professor);
 
         turmaRepository.save(turmaExistente);
         return toResponseDTO(turmaExistente);
     }
 
+    @Transactional
     public TurmaResponseDTO atualizarParcial(Long id, TurmaRequestDTO dto) {
         Turma turmaExistente = turmaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + id));
 
-        Professor professorExistente = professorRepository.findById(dto.getProfessorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
+        if (dto.getNome() != null) { turmaExistente.setNome(dto.getNome()); }
 
-        if(dto.getNome() != null) {turmaExistente.setNome(dto.getNome());}
-        if(dto.getProfessorId() != null) {
+        if (dto.getProfessorId() != null) {
             Professor professor = professorRepository.findById(dto.getProfessorId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado com o id: " + dto.getProfessorId()));
+            turmaExistente.setProfessor(professor);
 
             turmaExistente.setProfessor(professor);
         }
@@ -84,8 +84,9 @@ public class TurmaService {
 
     @Transactional
     public void deletar(Long id) {
-        if(!turmaRepository.existsById(id)) {throw new ResourceNotFoundException("Turma não encontrada com o id: " + id);}
-
+        if (!turmaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Turma não encontrada com o id: " + id);
+        }
         turmaRepository.deleteById(id);
     }
 
@@ -93,7 +94,8 @@ public class TurmaService {
         return new TurmaResponseDTO(
                 turma.getId(),
                 turma.getNome(),
-                turma.getProfessor() != null ? turma.getProfessor().getId() : null
+                turma.getProfessor() != null ? turma.getProfessor().getId() : null,
+                turma.getProfessor() != null ? turma.getProfessor().getNome() : null
         );
     }
 }

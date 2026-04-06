@@ -31,27 +31,27 @@ public class AlunoService {
         aluno.setDataDeNascimento(dto.getDataNascimento());
         aluno.setMatricula(dto.getMatricula());
 
-        if(dto.getTurmaId() != null) {
+        if (dto.getTurmaId() != null) {
             Turma turma = turmaRepository.findById(dto.getTurmaId())
-                    .orElseThrow(() -> new RuntimeException("Turma não encontrada com o id: " + dto.getTurmaId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + dto.getTurmaId()));
             aluno.setTurma(turma);
         }
 
         Aluno alunoSalvo = alunoRepository.save(aluno);
-        return converterRequestParaResponse(alunoSalvo);
+        return toResponseDTO(alunoSalvo);
     }
 
     public List<AlunoResponseDTO> listarTodos() {
         return alunoRepository.findAll()
                 .stream()
-                .map(this::converterRequestParaResponse)
+                .map(this::toResponseDTO)
                 .toList();
     }
 
     public AlunoResponseDTO buscarPorId(Long id) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado com o id: " + id));
-        return converterRequestParaResponse(aluno);
+        return toResponseDTO(aluno);
     }
 
     @Transactional
@@ -65,7 +65,7 @@ public class AlunoService {
         alunoExistente.setMatricula(dto.getMatricula());
 
         Aluno alunoAtualizado = alunoRepository.save(alunoExistente);
-        return converterRequestParaResponse(alunoAtualizado);
+        return toResponseDTO(alunoAtualizado);
     }
 
     @Transactional
@@ -73,29 +73,30 @@ public class AlunoService {
         Aluno alunoExistente = alunoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado com o id: " + id));
 
-        if(dto.getNome() != null) {alunoExistente.setNome(dto.getNome());}
-        if(dto.getEmail() != null) {alunoExistente.setEmail(dto.getEmail());}
-        if(dto.getDataNascimento() != null) {alunoExistente.setDataDeNascimento(dto.getDataNascimento());}
-        if(dto.getMatricula() != null) {alunoExistente.setMatricula(dto.getMatricula());}
+        if (dto.getNome() != null) { alunoExistente.setNome(dto.getNome()); }
+        if (dto.getEmail() != null) { alunoExistente.setEmail(dto.getEmail()); }
+        if (dto.getDataNascimento() != null) { alunoExistente.setDataDeNascimento(dto.getDataNascimento()); }
+        if (dto.getMatricula() != null) { alunoExistente.setMatricula(dto.getMatricula()); }
 
-        if(dto.getTurmaId() != null) {
+        if (dto.getTurmaId() != null) {
             Turma turma = turmaRepository.findById(dto.getTurmaId())
-                            .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + dto.getTurmaId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com o id: " + dto.getTurmaId()));
             alunoExistente.setTurma(turma);
         }
 
         Aluno alunoAtualizado = alunoRepository.save(alunoExistente);
-        return converterRequestParaResponse(alunoAtualizado);
+        return toResponseDTO(alunoAtualizado);
     }
 
     @Transactional
     public void deletar(Long id) {
-        if(!alunoRepository.existsById(id)) {throw new ResourceNotFoundException("Aluno não encontrado com o id: " + id);}
-
+        if (!alunoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Aluno não encontrado com o id: " + id);
+        }
         alunoRepository.deleteById(id);
     }
 
-    private AlunoResponseDTO converterRequestParaResponse(Aluno aluno) {
+    private AlunoResponseDTO toResponseDTO(Aluno aluno) {
         return new AlunoResponseDTO(
                 aluno.getId(),
                 aluno.getNome(),

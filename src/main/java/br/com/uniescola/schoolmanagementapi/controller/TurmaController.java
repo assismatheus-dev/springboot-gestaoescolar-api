@@ -4,6 +4,7 @@ import br.com.uniescola.schoolmanagementapi.dto.request.TurmaRequestDTO;
 import br.com.uniescola.schoolmanagementapi.dto.response.TurmaResponseDTO;
 import br.com.uniescola.schoolmanagementapi.service.TurmaService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/turmas")
+@RequiredArgsConstructor
 public class TurmaController {
-    private final TurmaService service;
 
-    public TurmaController(TurmaService service) {this.service = service;}
+    private final TurmaService service;
 
     @PostMapping
     public ResponseEntity<TurmaResponseDTO> salvar(@RequestBody @Valid TurmaRequestDTO dto) {
@@ -24,21 +25,26 @@ public class TurmaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TurmaResponseDTO>> listarTodos() {return ResponseEntity.ok(service.listarTodos());
+    public ResponseEntity<List<TurmaResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(service.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TurmaResponseDTO> buscarPorId(@PathVariable Long id) {return ResponseEntity.ok(service.buscarPorId(id));}
+    public ResponseEntity<TurmaResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TurmaResponseDTO> atualizarParcial(@PathVariable Long id,
-                                             @RequestBody TurmaRequestDTO dto) {
+    public ResponseEntity<TurmaResponseDTO> atualizarParcial(
+            @PathVariable Long id,
+            @RequestBody TurmaRequestDTO dto) {
         return ResponseEntity.ok(service.atualizarParcial(id, dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TurmaResponseDTO> atualizarTotal(@PathVariable Long id,
-                                           @RequestBody @Valid TurmaRequestDTO dto) {
+    public ResponseEntity<TurmaResponseDTO> atualizarTotal(
+            @PathVariable Long id,
+            @RequestBody @Valid TurmaRequestDTO dto) {
         return ResponseEntity.ok(service.atualizarTotal(id, dto));
     }
 

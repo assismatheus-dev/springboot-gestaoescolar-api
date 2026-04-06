@@ -3,8 +3,8 @@ package br.com.uniescola.schoolmanagementapi.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ProfessorResponseDTO {
 
     private Long id;

@@ -1,0 +1,25 @@
+# Compilados e pacotes
+/target/
+*.class
+*.war
+*.ear
+*.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+gen/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Log e Temporários
+*.log
+temp/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
